@@ -250,24 +250,33 @@ namespace NVBlastECS.Test
             public void Execute(int index)
             {
                 var nvFractureRead = nvFractureReads + index;
-                _FractureTool_setRemoveIslands(nvFractureRead->nvFractureToolPtr, nvFractureRead->islands);
-                switch (nvFractureRead->fractureType)
+                var myFractureType = nvFractureRead->fractureType;
+                var myNvVoronoiSitesGeneratorPtr = nvFractureRead->nvVoronoiSitesGeneratorPtr;
+                var myNvFractureToolPtr = nvFractureRead->nvFractureToolPtr;
+                var myIslands = nvFractureRead->islands;
+                var myChunkCount = nvFractureRead->chunkCount;
+                var myClusters = nvFractureRead->clusters;
+                var mySitesPerCluster = nvFractureRead->sitesPerCluster;
+                var myClusterRadius = nvFractureRead->clusterRadius;
+                var mySlicingConfiguration = nvFractureRead->slicingConfiguration;
+                _FractureTool_setRemoveIslands(myNvFractureToolPtr, myIslands);
+                switch (myFractureType)
                 {
                     case FractureTypes.Voronoi:
                         {
-                            _NvVoronoiSitesGenerator_uniformlyGenerateSitesInMesh(nvFractureRead->nvVoronoiSitesGeneratorPtr, nvFractureRead->chunkCount);
-                            _FractureTool_voronoiFracturing(nvFractureRead->nvFractureToolPtr, 0, nvFractureRead->nvVoronoiSitesGeneratorPtr);
+                            _NvVoronoiSitesGenerator_uniformlyGenerateSitesInMesh(myNvVoronoiSitesGeneratorPtr, myChunkCount);
+                            _FractureTool_voronoiFracturing(myNvFractureToolPtr, 0, myNvVoronoiSitesGeneratorPtr);
                             break;
                         }
                     case FractureTypes.Clustered:
                         {
-                            _NvVoronoiSitesGenerator_clusteredSitesGeneration(nvFractureRead->nvVoronoiSitesGeneratorPtr, nvFractureRead->clusters, nvFractureRead->sitesPerCluster, nvFractureRead->clusterRadius);
-                            _FractureTool_voronoiFracturing(nvFractureRead->nvFractureToolPtr, 0, nvFractureRead->nvVoronoiSitesGeneratorPtr);
+                            _NvVoronoiSitesGenerator_clusteredSitesGeneration(myNvVoronoiSitesGeneratorPtr, myClusters, mySitesPerCluster, myClusterRadius);
+                            _FractureTool_voronoiFracturing(myNvFractureToolPtr, 0, myNvVoronoiSitesGeneratorPtr);
                             break;
                         }
                     case FractureTypes.Slicing:
                         {
-                            _FractureTool_slicing(nvFractureRead->nvFractureToolPtr, 0, nvFractureRead->slicingConfiguration, false);
+                            _FractureTool_slicing(myNvFractureToolPtr, 0, mySlicingConfiguration, false);
                             break;
                         }
                     case FractureTypes.Skinned:
@@ -275,7 +284,7 @@ namespace NVBlastECS.Test
                             return;
                         }
                 }
-                _FractureTool_finalizeFracturing(nvFractureRead->nvFractureToolPtr);
+                _FractureTool_finalizeFracturing(myNvFractureToolPtr);
             }
         }
     }
